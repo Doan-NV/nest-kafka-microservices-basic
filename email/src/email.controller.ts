@@ -1,4 +1,3 @@
-import { MailerService } from '@nest-modules/mailer';
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { KafkaMessage } from 'kafkajs';
