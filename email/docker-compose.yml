@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  backend:
+    build: .
+    # ports: if change port
+    #   - 8000:3000
+    volumes:
+      - .:/src
+      - .env:/.env
+      - ./package.json:/package.json
+      - ./yarn.lock:/yarn.lock
+    # depends_on: if have database
+    #   - db
+    #   - redis_server

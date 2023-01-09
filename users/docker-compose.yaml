@@ -1,0 +1,23 @@
+version: '3.9'
+services:
+  user_backend:
+    build: .
+    ports:
+      - 8000:3000
+    volumes:
+      - .:/app
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8.0.31
+    restart: always
+    environment:
+      MYSQL_DATABASE: doannvMysql
+      MYSQL_USER: doannv
+      MYSQL_PASSWORD: 1
+      MYSQL_ROOT_PASSWORD: 1
+    volumes:
+      - .dbdata:/var/lib/mysql
+    ports:
+      - 33066:3306

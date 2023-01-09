@@ -1,21 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { Transport, MicroserviceOptions } from '@nestjs/microservices';
-import { AppModule } from './app.module';
+import { EmailModule } from './email.module';
 
 async function bootstrap() {
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
+    EmailModule,
     {
       transport: Transport.KAFKA,
       options: {
         client: {
           brokers: ['localhost:9092'],
-          requestTimeout: 10000
+          requestTimeout: 10000,
+          clientId: "kafka-local"
         },
+        
         consumer: {
           groupId: "my-kafka-consumer"
         }
       }
+
     },
   );
 

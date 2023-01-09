@@ -1,11 +1,21 @@
 .DS_Store
+#email
 /email/node_modules
 /email/dist
+/email/test
+
 .dbdata
 
+
+#users
+/users/node_modules
+/users/dist
+/users/test
+
+
 # local env files
-.env.local
-.env.*.local
+/email/.env
+/users/.env
 
 # Log files
 npm-debug.log*
