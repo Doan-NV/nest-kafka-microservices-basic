@@ -4,11 +4,11 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import {
-  MICROSERVICE_DATABASE,
+  MYSQL_DATABASE,
   MYSQL_HOST,
   MYSQL_PASSWORD,
   MYSQL_PORT,
-  MYSQL_USERNAME,
+  MYSQL_USER,
 } from './config';
 @Module({
   imports: [
@@ -16,9 +16,9 @@ import {
       type: 'mysql',
       host: MYSQL_HOST,
       port: Number(MYSQL_PORT),
-      username: MYSQL_USERNAME,
+      username: MYSQL_USER,
       password: MYSQL_PASSWORD,
-      database: MICROSERVICE_DATABASE,
+      database: MYSQL_DATABASE,
       autoLoadEntities: true,
       synchronize: true, // synchronize: true shouldn't be used in production - otherwise you can lose production data.
     }),

@@ -13,7 +13,6 @@ import * as bcrypt from 'bcryptjs';
   console.log('run');
 
   for (let i = 0; i < 10; i++) {
-    // console.log(i);
     const data = {
       firstName: faker.name.firstName(),
       lastName: faker.name.lastName(),

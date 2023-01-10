@@ -7,17 +7,23 @@ services:
     volumes:
       - .:/app
     depends_on:
-      - db
+      - db_user
 
-  db:
-    image: mysql:8.0.31
-    restart: always
-    environment:
-      MYSQL_DATABASE: doannvMysql
-      MYSQL_USER: doannv
-      MYSQL_PASSWORD: 1
-      MYSQL_ROOT_PASSWORD: 1
-    volumes:
-      - .dbdata:/var/lib/mysql
-    ports:
-      - 33066:3306
+# wrong config
+  db_user:
+    # image: mysql
+    # restart: always
+    # environment:
+    #   - MYSQL_DATABASE=${MYSQL_DATABASE}
+    #   - MYSQL_USER=${MYSQL_USER}
+    #   - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    #   - MYSQL_HOST=${MYSQL_HOST}
+    #   - MYSQL_PORT=${MYSQL_PORT}
+    #   - MYSQL_ROOT_PASSWORD=root
+    #   - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    # volumes:
+    #   - .dbdata:/var/lib/mysql
+    # expose:
+    #   - 33066
+    # ports:
+    #   - 33066:3306

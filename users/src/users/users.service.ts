@@ -11,25 +11,35 @@ export class UsersService {
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.usersRepository.find();
+    try {
+      return this.usersRepository.find();
+    } catch (error) {
+      throw error;
+    }
   }
 
   async findOne(id: string): Promise<User> {
-    return this.usersRepository.findOneBy({ id });
+    try {
+      return this.usersRepository.findOneBy({ id });
+    } catch (error) {
+      throw error;
+    }
   }
 
   async remove(id: string): Promise<void> {
-    await this.usersRepository.delete(id);
+    try {
+      await this.usersRepository.delete(id);
+    } catch (error) {
+      throw error;
+    }
   }
 
   public async create(user: UserDto): Promise<any> {
     try {
-      console.log('run create');
       const data = await this.usersRepository.save(user);
-      console.log(data);
       return data;
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }
