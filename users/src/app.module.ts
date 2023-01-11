@@ -10,6 +10,7 @@ import {
   MYSQL_PORT,
   MYSQL_USER,
 } from './config';
+import { AuthModule } from './auth/auth.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -23,6 +24,7 @@ import {
       synchronize: true, // synchronize: true shouldn't be used in production - otherwise you can lose production data.
     }),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
