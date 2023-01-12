@@ -4,5 +4,5 @@ export class UserDto {
   lastName: string;
   email: string;
   password: string;
-  isAmbassador: boolean;
+  isAmbassador?: boolean;
 }

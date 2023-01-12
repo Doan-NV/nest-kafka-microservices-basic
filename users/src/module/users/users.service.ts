@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { BcryptHelper } from 'src/helper/bcrypt';
 import { UserDto } from './dto/user.dto';
 import { User } from './user.entity';
 
@@ -18,9 +19,9 @@ export class UsersService {
     }
   }
 
-  async findOne(id: string): Promise<User> {
+  async findOneBy(params: FindOptionsWhere<User>): Promise<User> {
     try {
-      return this.usersRepository.findOneBy({ id });
+      return this.usersRepository.findOneBy(params);
     } catch (error) {
       throw error;
     }
@@ -36,8 +37,10 @@ export class UsersService {
 
   public async create(user: UserDto): Promise<any> {
     try {
-      const data = await this.usersRepository.save(user);
-      return data;
+      let { password } = user;
+      password = await BcryptHelper.hasPassword(password);
+      const newUser = await this.usersRepository.save({ ...user, password });
+      return newUser.id;
     } catch (error) {
       throw error;
     }
