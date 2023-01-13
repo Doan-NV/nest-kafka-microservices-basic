@@ -12,10 +12,16 @@
 /users/dist
 /users/test
 
+#admin
+/admin/node_modules
+/admin/dist
+/admin/test
+
 
 # local env files
 /email/.env
 /users/.env
+/admin/.env
 
 # Log files
 npm-debug.log*
