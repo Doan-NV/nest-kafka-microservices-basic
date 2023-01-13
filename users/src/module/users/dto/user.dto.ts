@@ -6,3 +6,10 @@ export class UserDto {
   password: string;
   isAmbassador?: boolean;
 }
+
+export class UserTokenDto {
+  userId: string;
+  token: string;
+  expiredAt: Date;
+  createdAt?: Date;
+}

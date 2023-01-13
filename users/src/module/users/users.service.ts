@@ -3,12 +3,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindOptionsWhere, Repository } from 'typeorm';
 import { BcryptHelper } from 'src/helper/bcrypt';
 import { UserDto } from './dto/user.dto';
-import { User } from './user.entity';
+import { User } from './entity/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private usersRepository: Repository<User>,
+    @InjectRepository(User) private usersRepository: Repository<User>
   ) {}
 
   async findAll(): Promise<User[]> {

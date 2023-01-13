@@ -1,4 +1,5 @@
 import * as jwt from 'jsonwebtoken';
+import { ErrorHelper } from './error';
 
 export class TokenHelper {
   /**
@@ -11,7 +12,7 @@ export class TokenHelper {
   static generateToken(
     payload: Record<string, any>,
     secret: string,
-    expiresIn: string,
+    expiresIn: string
   ): {
     token: string;
     expires: number;
@@ -26,9 +27,11 @@ export class TokenHelper {
     };
   }
   static verifyToken(token: string, secret: string): any {
-    const user = jwt.verify(token, secret);
-    console.log('user: ', user);
-
-    return user;
+    try {
+      const user = jwt.verify(token, secret);
+      return user;
+    } catch (error) {
+      ErrorHelper.UnauthorizedException('token expired');
+    }
   }
 }
