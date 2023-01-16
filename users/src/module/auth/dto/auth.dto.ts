@@ -1,4 +1,4 @@
-import { IsEmail, IsString } from 'class-validator';
+import { IsEmail, IsString, MinLength, minLength } from 'class-validator';
 
 export class LoginDto {
   @IsString()
@@ -6,7 +6,7 @@ export class LoginDto {
   email: string;
 
   @IsString()
-  // @IsMatchPattern(PASSWORD_PATTERN)
+  @MinLength(5)
   password: string;
 }
 

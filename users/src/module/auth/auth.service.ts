@@ -39,14 +39,15 @@ export class AuthService {
 
   async login(data: LoginDto): Promise<any> {
     const { email, password } = data;
-    const user = await this.usersService.findOneBy({ email });
+    const user = await this.usersService.validateUser({ email });
     if (!user) {
       throw new HttpException(
         { message: 'username or email does not exist' },
         HttpStatus.UNPROCESSABLE_ENTITY
       );
     }
-    const passwordCompare = BcryptHelper.comparePassword(password);
+    const passwordCompare = await BcryptHelper.compare(password, user.password);
+
     if (passwordCompare) {
       const { token, expires } = this._generateToken(user.id);
       const date = new Date();
