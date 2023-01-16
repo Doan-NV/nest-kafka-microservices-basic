@@ -10,6 +10,7 @@ import {
 } from './environments';
 import { UserController } from './user/user.controller';
 import { UserModule } from './user/user.module';
+import { ProductModule } from './product/product.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UserModule } from './user/user.module';
       synchronize: true, // synchronize: true shouldn't be used in production - otherwise you can lose production data.
     }),
     UserModule,
+    ProductModule,
   ],
   controllers: [UserController, AuthController],
   providers: [],
