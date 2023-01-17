@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './modules/auth/auth.controller';
+import { UserModule } from './modules/user/user.module';
 import {
   MYSQL_DATABASE,
   MYSQL_HOST,
@@ -8,12 +8,9 @@ import {
   MYSQL_PORT,
   MYSQL_USER,
 } from './environments';
-import { UserController } from './modules/user/user.controller';
-import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
-import { OrderModule } from './modules/order/order.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
-
+import { OrderModule } from './modules/order/order.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -28,10 +25,10 @@ import { KafkaModule } from './modules/kafka/kafka.module';
     }),
     UserModule,
     ProductModule,
-    OrderModule,
     KafkaModule,
+    OrderModule,
   ],
-  controllers: [UserController, AuthController],
+  controllers: [],
   providers: [],
 })
 export class AppModule {}

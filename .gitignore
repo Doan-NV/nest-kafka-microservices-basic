@@ -17,11 +17,17 @@
 /admin/dist
 /admin/test
 
+#order
+/order/node_modules
+/order/dist
+/order/test
+
 
 # local env files
 /email/.env
 /users/.env
 /admin/.env
+/order/.env
 
 # Log files
 npm-debug.log*
