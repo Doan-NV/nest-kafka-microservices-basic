@@ -13,9 +13,10 @@ export class ProductService {
     return await this.productRepository.find();
   }
 
-  async save(data: ProductCreateDto) {
+  async save(data = {}) {
     try {
-      // this.productRepository.save(data, { reload: true });
+      const newProduct = this.productRepository.save(data, { reload: true });
+      return newProduct;
     } catch (error) {
       throw error;
     }

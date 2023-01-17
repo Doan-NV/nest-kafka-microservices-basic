@@ -2,12 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  JoinColumn,
-  OneToOne,
   PrimaryGeneratedColumn,
-  Unique,
 } from 'typeorm';
-import { User } from './user.entity';
 @Entity()
 export class UserToken {
   @PrimaryGeneratedColumn('uuid')
