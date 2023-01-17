@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { HttpService } from 'src/share/http/http.service';
 import { RegisterDto } from './dto/user.dto';
-import { LoginDto } from 'src/auth/dto/auth.dto';
+import { LoginDto } from 'src/modules/auth/dto/auth.dto';
 import { BASE_URL } from 'src/environments';
 
 @Injectable()

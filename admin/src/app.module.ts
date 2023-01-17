@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AuthController } from './auth/auth.controller';
+import { AuthController } from './modules/auth/auth.controller';
 import {
   MYSQL_DATABASE,
   MYSQL_HOST,
@@ -8,9 +8,9 @@ import {
   MYSQL_PORT,
   MYSQL_USER,
 } from './environments';
-import { UserController } from './user/user.controller';
-import { UserModule } from './user/user.module';
-import { ProductModule } from './product/product.module';
+import { UserController } from './modules/user/user.controller';
+import { UserModule } from './modules/user/user.module';
+import { ProductModule } from './modules/product/product.module';
 
 @Module({
   imports: [

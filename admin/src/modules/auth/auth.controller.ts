@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { UserService } from 'src/user/user.service';
+import { UserService } from 'src/modules/user/user.service';
 import { AuthGuard } from './auth.guard';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
 

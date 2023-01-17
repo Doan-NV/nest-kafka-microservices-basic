@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { ProductCreateDto } from './dto/product.dto';
 import { Product } from './entity/product.entity';
 
@@ -15,7 +15,7 @@ export class ProductService {
 
   async save(data: ProductCreateDto) {
     try {
-      this.productRepository.save(data, { reload: true });
+      // this.productRepository.save(data, { reload: true });
     } catch (error) {
       throw error;
     }
