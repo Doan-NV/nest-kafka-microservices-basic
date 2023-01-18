@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SERVER } from 'src/environments';
 import { ProductModule } from '../product/product.module';
 import { KafkaController } from './kafka.controller';
 import { KafkaError } from './kafka.error';
@@ -11,7 +12,7 @@ import { KafkaService } from './kafka.service';
     TypeOrmModule.forFeature([KafkaError]),
     ClientsModule.register([
       {
-        name: 'KAFKA_SERVER',
+        name: SERVER,
         transport: Transport.KAFKA,
         options: {
           client: {

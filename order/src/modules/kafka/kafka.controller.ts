@@ -1,6 +1,7 @@
 import { Controller } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 import { KafkaMessage } from 'kafkajs';
+import { ORDER_TOPIC } from 'src/environments';
 import { ProductService } from '../product/product.service';
 import { KafkaService } from './kafka.service';
 
@@ -10,7 +11,7 @@ export class KafkaController {
     private readonly kafkaService: KafkaService,
     private readonly productService: ProductService,
   ) {}
-  @MessagePattern('order-topic')
+  @MessagePattern(ORDER_TOPIC)
   async event(@Payload() message: KafkaMessage) {
     try {
       await this[message.key.toString()](message.value);

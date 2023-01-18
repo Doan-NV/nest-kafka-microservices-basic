@@ -8,6 +8,9 @@ const MYSQL_HOST = process.env.MYSQL_HOST || 'localhost';
 const MYSQL_PORT = process.env.MYSQL_PORT || 3306;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const BASE_URL = process.env.BASE_URL;
+const ORDER_TOPIC = process.env.ORDER_TOPIC;
+const SERVER = 'SERVER';
+const EMAIL_TOPIC = process.env.EMAIL_TOPIC;
 export {
   MYSQL_DATABASE,
   MYSQL_USER,
@@ -16,4 +19,7 @@ export {
   MYSQL_PORT,
   PRIVATE_KEY,
   BASE_URL,
+  SERVER,
+  ORDER_TOPIC,
+  EMAIL_TOPIC,
 };

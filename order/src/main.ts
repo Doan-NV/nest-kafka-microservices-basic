@@ -13,9 +13,9 @@ async function bootstrap() {
     }
     next();
   });
-  app.useGlobalPipes(new ValidationPipe());
-  app.setGlobalPrefix('api/order');
+  // app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
   app.use(cookieParser());
-  await app.listen(3000);
+  await app.listen(3003);
 }
 bootstrap();

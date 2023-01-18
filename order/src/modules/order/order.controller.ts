@@ -2,9 +2,14 @@ import {
   BadRequestException,
   Body,
   Controller,
+  Get,
   NotFoundException,
+  Param,
   Post,
+  Req,
 } from '@nestjs/common';
+import { Request } from 'express';
+import { EMAIL_TOPIC } from 'src/environments';
 import { Connection } from 'typeorm';
 import { KafkaService } from '../kafka/kafka.service';
 import { Product } from '../product/entity/product.entity';
@@ -25,46 +30,36 @@ export class OrderController {
     private readonly productService: ProductService,
   ) {}
 
-  @Post('confirm')
-  async confirm(@Body('source') source: string) {
-    const order = await this.orderService.findOne({
-      where: { transaction_id: source },
-      relations: ['user', 'order_items'],
-    });
+  // @Post('confirm')
+  // async confirm(@Body('source') source: string) {
+  //   const order = await this.orderService.findOne({
+  //     where: { transaction_id: source },
+  //     relations: ['user', 'orderItems'],
+  //   });
 
-    if (!order) {
-      throw new NotFoundException('Order not found');
-    }
+  //   if (!order) {
+  //     throw new NotFoundException('Order not found');
+  //   }
 
-    await this.orderService.update(order.id.toString(), { complete: true });
+  //   await this.orderService.update(order.id.toString(), { complete: true });
 
-    await this.kafkaService.emit(
-      ['admin_topic', 'email_topic'],
-      'orderCompleted',
-      {
-        ...order,
-        total: order.total,
-      },
-    );
+  //   await this.kafkaService.emit(
+  //     ['admin-topic', 'email-topic'],
+  //     'orderCompleted',
+  //     {
+  //       ...order,
+  //       total: order.total,
+  //     },
+  //   );
 
-    return {
-      message: 'success',
-    };
-  }
+  //   return {
+  //     message: 'success',
+  //   };
+  // }
 
   @Post()
-  async create(@Body() body: CreateOrderDto) {
-    // const link: Link = await this.linkService.findOne({
-    //   code: body.code,
-    //   relations: ["user"]
-    // });
-
-    // if (!link) {
-    //   throw new BadRequestException("Invalid link!");
-    // }
-
-    const user = await this.userService.get(`users/$link.user_id}`);
-
+  async create(@Body() body: CreateOrderDto, @Req() request: Request) {
+    const user = await this.userService.get(request.cookies.key);
     const queryRunner = this.connection.createQueryRunner();
 
     try {
@@ -73,42 +68,42 @@ export class OrderController {
 
       const o = new Order();
       o.userId = 'link.user_id';
-      o.firstName = body.first_name;
-      o.lastName = body.last_name;
+      // o.firstName = body.firstName;
+      // o.lastName = body.lastName;
       o.email = body.email;
       o.address = body.address;
       o.country = body.country;
-      o.city = body.city;
-      o.zip = body.zip;
-      o.code = body.code;
+      // o.city = body.city;
+      // o.zip = body.zip;
+      // o.code = body.code;
 
       const order = await queryRunner.manager.save(o);
 
       const lineItems = [];
 
-      for (const p of body.products) {
-        const product: Product = await this.productService.findOne({
-          id: p.product_id,
-        });
+      // for (const p of body.products) {
+      //   const product: Product = await this.productService.findOne({
+      //     id: p.product_id,
+      //   });
 
-        const orderItem = new OrderItem();
-        orderItem.order = order;
-        orderItem.productTitle = product.title;
-        orderItem.price = product.price;
-        orderItem.quantity = p.quantity;
-        orderItem.adminRevenue = 0.9 * product.price * p.quantity;
+      //   const orderItem = new OrderItem();
+      //   orderItem.order = order;
+      //   orderItem.productTitle = product.title;
+      //   orderItem.price = product.price;
+      //   orderItem.quantity = p.quantity;
+      //   orderItem.adminRevenue = 0.9 * product.price * p.quantity;
 
-        await queryRunner.manager.save(orderItem);
+      //   await queryRunner.manager.save(orderItem);
 
-        lineItems.push({
-          name: product.title,
-          description: product.description,
-          images: [product.image],
-          amount: 100 * product.price,
-          currency: 'usd',
-          quantity: p.quantity,
-        });
-      }
+      //   lineItems.push({
+      //     name: product.title,
+      //     description: product.description,
+      //     images: [product.image],
+      //     amount: 100 * product.price,
+      //     currency: 'usd',
+      //     quantity: p.quantity,
+      //   });
+      // }
 
       // const source = await this.stripeClient.checkout.sessions.create({
       //   payment_method_types: ['card'],
@@ -130,5 +125,10 @@ export class OrderController {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  @Get()
+  async listProduct(@Param() params) {
+    return this.productService.find();
   }
 }
