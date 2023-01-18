@@ -18,7 +18,6 @@ async function bootstrap() {
           groupId: "my-kafka-consumer"
         }
       }
-
     },
   );
 
