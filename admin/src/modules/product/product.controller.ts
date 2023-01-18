@@ -12,6 +12,7 @@ import { ProductService } from './product.service';
 import { ProductCreateDto } from './dto/product.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { KafkaService } from '../kafka/kafka.service';
+import { ORDER_TOPIC } from 'src/environments';
 
 @Controller('products')
 export class ProductController {
@@ -30,33 +31,34 @@ export class ProductController {
   @Post()
   async create(@Body() body: ProductCreateDto) {
     const product = await this.productService.save(body);
-    await this.kafkaService.emit(['checkout-topic'], 'productCreated', product);
+    await this.kafkaService.emit([ORDER_TOPIC], 'productCreated', product);
     return product;
   }
 
   @UseGuards(AuthGuard)
   @Get(':id')
-  async get(@Param('id') id: number) {
-    return this.productService.findOne({ id });
+  async get(@Param('id') id: string) {
+    const product = await this.productService.findOne({ id });
+    return product;
   }
 
   @UseGuards(AuthGuard)
   @Put(':id')
-  async update(@Param('id') id: number, @Body() body: ProductCreateDto) {
+  async update(@Param('id') id: string, @Body() body: ProductCreateDto) {
     await this.productService.update(id, body);
     const product = await this.productService.findOne({ id });
 
-    await this.kafkaService.emit(['checkout_topic'], 'productUpdated', product);
+    await this.kafkaService.emit([ORDER_TOPIC], 'productUpdated', product);
 
     return product;
   }
 
   @UseGuards(AuthGuard)
   @Delete(':id')
-  async delete(@Param('id') id: number) {
+  async delete(@Param('id') id: string) {
     const response = await this.productService.delete(id);
 
-    await this.kafkaService.emit(['checkout_topic'], 'productDeleted', id);
+    await this.kafkaService.emit([ORDER_TOPIC], 'productDeleted', id);
 
     return response;
   }

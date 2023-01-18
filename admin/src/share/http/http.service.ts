@@ -2,20 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { HttpService as NestHttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 import { ErrorHelper } from 'src/helper/error';
-import { BASE_URL } from 'src/environments';
 @Injectable()
 export class HttpService {
   constructor(private httpService: NestHttpService) {}
-  async get(authorization: string) {
-    const [bearer, token] = authorization.split(' ');
-    const urlLineApis = `${BASE_URL}/auth/verify-token`;
+  async get(url: string, token = '') {
     try {
-      console.log('token: ', token);
-
       const { data } = await firstValueFrom(
-        this.httpService.get(urlLineApis, {
+        this.httpService.get(url, {
           headers: {
-            Cookie: `key=Bearer ${token}`,
+            Cookie: `key=${token}`,
           },
         }),
       );
@@ -26,15 +21,18 @@ export class HttpService {
     }
   }
 
-  async post(body: any, urlLineApis: string) {
+  async post(body = {}, url: string, token = '') {
     try {
       const { data } = await firstValueFrom(
-        this.httpService.post(urlLineApis, body),
+        this.httpService.post(url, body, {
+          headers: {
+            Cookie: `key=${token}`,
+          },
+        }),
       );
       return data;
     } catch (error) {
-      console.log(error.response.data);
-      ErrorHelper.DynamicHttpException(error.response.data.message, 400);
+      ErrorHelper.DynamicHttpException(error?.response?.data?.message, 400);
     }
   }
 }

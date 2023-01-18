@@ -9,8 +9,12 @@ export class KafkaService {
   constructor(
     @InjectRepository(KafkaError)
     private kafkaErrorRepository: Repository<KafkaError>,
-    @Inject('KAFKA_SERVER') private client: ClientKafka,
+    @Inject('KAFKA_SERVER') private clientKafka: ClientKafka,
   ) {}
+  async onModuleInit() {
+    this.clientKafka.subscribeToResponseOf('email-topic');
+    await this.clientKafka.connect();
+  }
 
   async save(data = {}) {
     try {
@@ -21,10 +25,9 @@ export class KafkaService {
     }
   }
 
-  async emit(topic: string[], key: string, value: any) {
-    for (let i = 0; i < topic.length; i++) {
-      console.log(topic);
-      await this.client.emit(topic, {
+  async emit(topics: string[], key: string, value: any) {
+    for (const topic of topics) {
+      this.clientKafka.emit(topic, {
         key,
         value: JSON.stringify(value),
       });

@@ -30,7 +30,7 @@ export class ProductService {
     }
   }
 
-  async update(id, data) {
+  async update(id: string, data = {}) {
     try {
       return this.productRepository.update(id, data);
     } catch (error) {
@@ -38,7 +38,7 @@ export class ProductService {
     }
   }
 
-  async delete(id) {
+  async delete(id: string) {
     try {
       await this.productRepository.delete(id);
     } catch (error) {

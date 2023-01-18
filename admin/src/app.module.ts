@@ -8,7 +8,6 @@ import {
   MYSQL_PORT,
   MYSQL_USER,
 } from './environments';
-import { UserController } from './modules/user/user.controller';
 import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
@@ -31,7 +30,7 @@ import { KafkaModule } from './modules/kafka/kafka.module';
     OrderModule,
     KafkaModule,
   ],
-  controllers: [UserController, AuthController],
+  controllers: [AuthController],
   providers: [],
 })
 export class AppModule {}

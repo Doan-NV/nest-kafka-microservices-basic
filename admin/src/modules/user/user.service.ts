@@ -20,12 +20,16 @@ export class UserService {
     return response;
   }
 
-  async logout(data: any) {
-    return true;
+  async logout(token: string) {
+    const url = `${BASE_URL}/auth/logout`;
+    const response = await this.httpService.post({}, url, token);
+
+    return response;
   }
 
   async get(token: string) {
-    const data = await this.httpService.get(token);
+    const url = `${BASE_URL}/auth/info`;
+    const data = await this.httpService.get(url, token);
     return data;
   }
 }
