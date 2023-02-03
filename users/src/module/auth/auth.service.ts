@@ -33,8 +33,8 @@ export class AuthService {
       throw error;
     }
   }
-  async validateUser(): Promise<any> {
-    return 'validate user';
+  async validateToken(authorization: string): Promise<any> {
+    const [bearer, token] = authorization.split(' ');
   }
 
   async login(data: LoginDto): Promise<any> {

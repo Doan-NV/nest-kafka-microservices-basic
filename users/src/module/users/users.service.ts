@@ -20,8 +20,6 @@ export class UsersService {
   }
 
   async findOneBy(params: FindOptionsWhere<User>): Promise<User | any> {
-    console.log('🚀 ~ file: users.service.ts:23 ~ UsersService ~ findOneBy ~ params', params);
-
     try {
       const user = await this.usersRepository.findOneBy(params);
       return user ? this.buildUser(user) : user;
@@ -53,6 +51,14 @@ export class UsersService {
     try {
       const user = await this.usersRepository.findOneBy(params);
       return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  public async update(id: string, data = {}) {
+    try {
+      return await this.usersRepository.update(id, data);
     } catch (error) {
       throw error;
     }

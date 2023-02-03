@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ClientKafka } from '@nestjs/microservices';
 import { InjectRepository } from '@nestjs/typeorm';
+import { EMAIL_TOPIC } from 'src/environments';
 import { Repository } from 'typeorm';
 import { KafkaError } from './kafka.error';
 
@@ -12,7 +13,7 @@ export class KafkaService {
     @Inject('KAFKA_SERVER') private clientKafka: ClientKafka,
   ) {}
   async onModuleInit() {
-    this.clientKafka.subscribeToResponseOf('email-topic');
+    this.clientKafka.subscribeToResponseOf(EMAIL_TOPIC);
     await this.clientKafka.connect();
   }
 

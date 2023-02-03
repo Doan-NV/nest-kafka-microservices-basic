@@ -8,8 +8,8 @@ export class ProductService {
   constructor(
     @InjectRepository(Product) private productRepository: Repository<Product>,
   ) {}
-  async find() {
-    return await this.productRepository.find();
+  async find(params: any) {
+    return await this.productRepository.find(params);
   }
 
   async save(data = {}) {

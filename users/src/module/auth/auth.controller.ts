@@ -3,11 +3,13 @@ import {
   Controller,
   Get,
   Post,
+  Put,
   Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { BcryptHelper } from 'src/helper/bcrypt';
 import { ErrorHelper } from 'src/helper/error';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from './auth.guard';
@@ -20,12 +22,6 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly userService: UsersService
   ) {}
-  @Get()
-  @UseGuards(AuthGuard)
-  async getHello(@Req() request: Request): Promise<any> {
-    return 'hello word';
-  }
-
   @Post('/login')
   async login(
     @Body() data: LoginDto,
@@ -63,6 +59,46 @@ export class AuthController {
   @UseGuards(AuthGuard)
   async user(@Req() request: Request) {
     const authorization = request.cookies['key'];
+    const [bearer, token] = authorization.split(' ');
+    if (bearer == 'Bearer' && token != '') {
+      const user = await this.authService.verifyToken(token);
+
+      if (!user) {
+        ErrorHelper.UnauthorizedException('Unauthorized Exception');
+      }
+      return this.userService.findOneBy({ id: user.id });
+    } else {
+      ErrorHelper.UnauthorizedException('Unauthorized');
+    }
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('auth/password')
+  async updatePassword(
+    @Req() request: Request,
+    @Body('password') password: string,
+    @Body('passwordConfirm') passwordConfirm: string
+  ) {
+    if (password !== passwordConfirm) {
+      ErrorHelper.UnauthorizedException('Unauthorized Exception');
+    }
+
+    const cookie = request.cookies.key;
+    const [bearer, token] = cookie.split(' ');
+    const { id } = await this.authService.verifyToken(token);
+
+    await this.userService.update(id, {
+      password: await BcryptHelper.hash(password),
+    });
+
+    return this.userService.findOneBy({ id });
+  }
+
+  @Get('/info')
+  @UseGuards(AuthGuard)
+  async getInfo(@Req() request: Request) {
+    const authorization = request.cookies['key'];
+
     const [bearer, token] = authorization.split(' ');
     if (bearer == 'Bearer' && token != '') {
       const user = await this.authService.verifyToken(token);

@@ -11,6 +11,7 @@ const BASE_URL = process.env.BASE_URL;
 const ORDER_TOPIC = process.env.ORDER_TOPIC;
 const SERVER = 'SERVER';
 const EMAIL_TOPIC = process.env.EMAIL_TOPIC;
+const ADMIN_TOPIC = process.env.ADMIN_TOPIC;
 export {
   MYSQL_DATABASE,
   MYSQL_USER,
@@ -22,4 +23,5 @@ export {
   SERVER,
   ORDER_TOPIC,
   EMAIL_TOPIC,
+  ADMIN_TOPIC,
 };
