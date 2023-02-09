@@ -1,3 +1,12 @@
+import {
+  IsString,
+  IsEmail,
+  MaxLength,
+  IsNotEmpty,
+  IsOptional,
+  MinLength,
+} from 'class-validator';
+
 export class UserDto {
   id?: string;
   firstName: string;

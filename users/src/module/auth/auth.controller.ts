@@ -14,7 +14,7 @@ import { ErrorHelper } from 'src/helper/error';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RegisterUserDto, VerifyEmailDto } from './dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -34,7 +34,7 @@ export class AuthController {
 
   @Post('/register')
   async register(
-    @Body() data: RegisterDto,
+    @Body() data: RegisterUserDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<any> {
     const { token } = await this.authService.register(data);
@@ -110,5 +110,11 @@ export class AuthController {
     } else {
       ErrorHelper.UnauthorizedException('Unauthorized');
     }
+  }
+
+  @Post('/verify-email')
+  async create(@Body() body: VerifyEmailDto): Promise<any> {
+    const data = await this.authService.sendVerifyEmail(body);
+    return data;
   }
 }

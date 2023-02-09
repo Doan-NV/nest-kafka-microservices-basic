@@ -1,6 +1,4 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './module/users/users.module';
 import { AuthModule } from './module/auth/auth.module';
@@ -12,6 +10,7 @@ import {
   MYSQL_USER,
 } from './environments/index';
 import { ConfigModule } from './share/config/config.module';
+// import { RedisModule } from './module/redis/redis.module';
 
 @Module({
   imports: [
@@ -28,6 +27,7 @@ import { ConfigModule } from './share/config/config.module';
     UsersModule,
     AuthModule,
     ConfigModule,
+    // RedisModule,
   ],
 })
 export class AppModule {}

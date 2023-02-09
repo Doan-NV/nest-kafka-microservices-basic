@@ -1,4 +1,4 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 @Entity()
 export class User {
@@ -12,16 +12,12 @@ export class User {
   lastName: string;
 
   @Column({ unique: true })
+  username: string;
+
+  @Column({ unique: true })
   email: string;
 
   @Exclude()
   @Column()
   password: string;
-
-  @Column({ default: true })
-  isAmbassador: boolean;
-
-  get name() {
-    return `${this.firstName} ${this.lastName}`;
-  }
 }

@@ -1,18 +1,23 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { EMAIL_TOPIC } from 'src/environments';
 import { BcryptHelper } from 'src/helper/bcrypt';
 import { ErrorHelper } from 'src/helper/error';
 import { TokenHelper } from 'src/helper/token';
 import { ConfigService } from 'src/share/config/config.service';
+import { KafkaService } from '../kafka/kafka.service';
+// import { RedisService } from '../redis/redis.service';
 import { UsersService } from '../users/users.service';
 import { TokenService } from '../users/userToken.service';
-import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { LoginDto, RegisterUserDto, VerifyEmailDto } from './dto/auth.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
-    private readonly tokenService: TokenService
+    private readonly tokenService: TokenService,
+    private kafkaService: KafkaService,
+    // private redisService: RedisService
   ) {}
   async verifyToken(token: string): Promise<any> {
     try {
@@ -76,7 +81,7 @@ export class AuthService {
     }
   }
 
-  async register(data: RegisterDto): Promise<any> {
+  async register(data: RegisterUserDto): Promise<any> {
     try {
       const { email } = data;
       const existUser = await this.usersService.findOneBy({ email });
@@ -111,6 +116,18 @@ export class AuthService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async sendVerifyEmail(data: VerifyEmailDto): Promise<any> {
+    // sinh ma code
+    const code = TokenHelper.generateOTP();
+    // luu user vao database
+
+    // send email ma code
+    await this.kafkaService.emit([EMAIL_TOPIC], 'sendVerifyEmail', {
+      ...data,
+      message: code,
+    });
   }
 
   private _generateToken(id: string) {
