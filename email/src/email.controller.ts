@@ -1,10 +1,7 @@
 import { Controller, Get } from '@nestjs/common';
 import { MessagePattern, Payload } from '@nestjs/microservices';
-import { KafkaMessage } from 'kafkajs';
 import { EmailService } from './email.service';
 import { EMAIL_TOPIC } from './config';
-
-
 @Controller()
 export class EmailController {
   constructor(
@@ -12,8 +9,8 @@ export class EmailController {
   ) { }
 
   @MessagePattern(EMAIL_TOPIC)
-  async orderCompile(@Payload() message: KafkaMessage) {
-    console.log("kafka-message-EMAIL-SERVICE", message);
-    this.emailService.sendCompleteOrder(message);
+  async orderCompile(@Payload() payload: any) {
+
+    this.emailService.sendCompleteOrder(payload);
   }
 }

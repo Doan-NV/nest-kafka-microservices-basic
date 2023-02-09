@@ -5,22 +5,21 @@ import { KafkaMessage } from 'kafkajs';
 export class EmailService {
   constructor(private mailerService: MailerService) {}
 
-  public sendCompleteOrder(message:KafkaMessage) {
+  public async sendCompleteOrder(payload: any) {
+    console.log('🚀 ~ file: email.service.ts:9 ~ EmailService ~ sendCompleteOrder ~ payload', payload);
 
-    // this.mailerService.sendMail({
-    //   to: 'yileuu37na@gmail.com', // List of receivers email address
-    //   // from: 'yileuu37na@gmail.com', // Senders email address
-    //   subject: 'Testing Nest MailerModule ✔', // Subject line
-    //   text: 'welcome', // plaintext body
-    //   html: '<b>welcome</b>', // HTML body content
-    // })
-    //   .then((success) => {
-    //     console.log(success);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-    console.log('message kafka send to mail service: ', message);
+    const {email, message, } =payload;
+    this.mailerService.sendMail({
+      to: email, // List of receivers email address
+      subject: 'Testing Nest MailerModule ✔', // Subject line
+      text: `${message}`, // plaintext body
+    })
+      .then((success) => {
+        console.log(success);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     
     return 'send mail success';
   }
