@@ -10,7 +10,7 @@ import {
   MYSQL_USER,
 } from './environments/index';
 import { ConfigModule } from './share/config/config.module';
-// import { RedisModule } from './module/redis/redis.module';
+import { RedisModule } from './module/cache/redis.module';
 
 @Module({
   imports: [
@@ -27,7 +27,7 @@ import { ConfigModule } from './share/config/config.module';
     UsersModule,
     AuthModule,
     ConfigModule,
-    // RedisModule,
+    RedisModule,
   ],
 })
 export class AppModule {}

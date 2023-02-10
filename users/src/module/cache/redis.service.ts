@@ -1,11 +1,11 @@
+import ms from 'ms';
 import { Injectable } from '@nestjs/common';
-import * as Redis from 'ioredis';
-
+import Redis, { RedisOptions } from 'ioredis';
 @Injectable()
 export class RedisService {
-  redisClient;
-  constructor(config?: Redis.RedisOptions) {
-    this.redisClient = Redis;
+  redisClient: Redis;
+  constructor(config?: RedisOptions) {
+    this.redisClient = new Redis(config);
   }
 
   async initConnection() {
@@ -16,15 +16,15 @@ export class RedisService {
     }
   }
 
-  async addByKey(key, value, time) {
-    return this.redisClient.set(key, value, 'PX', time);
+  async addByKey(key: string | Buffer, value: string | Buffer, time: string) {
+    return this.redisClient.set(key, value, 'PX', ms(time));
   }
 
-  async getByKey(key) {
+  async getByKey(key: string | Buffer) {
     return this.redisClient.get(key);
   }
 
-  async removeByKey(key) {
+  async removeByKey(key: string | Buffer) {
     return this.redisClient.del(key);
   }
 

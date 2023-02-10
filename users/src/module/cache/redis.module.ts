@@ -1,22 +1,21 @@
 import { Module, DynamicModule } from '@nestjs/common';
-import * as Redis from 'ioredis';
+import Redis, { RedisOptions } from 'ioredis';
 import { REDIS_HOST, REDIS_PORT } from 'src/environments';
+
+// import { RedisModuleConstant } from './constants/redis.constant';
 import { RedisService } from './redis.service';
 
 @Module({
   imports: [
-    RedisModule.forRoot({
-      port: parseInt(REDIS_PORT),
-      host: REDIS_HOST,
-    }),
+    RedisModule.forRoot({ port: parseInt(REDIS_PORT), host: REDIS_HOST }),
   ],
   exports: [RedisModule.forRoot()],
 })
 export class RedisModule {
-  static forRoot(options?: Redis.RedisOptions): DynamicModule {
+  static forRoot(options?: RedisOptions): DynamicModule {
     const providers = [
       {
-        provide: Symbol('REDIS'),
+        provide: 'REDIS',
         useFactory: () => new RedisService(options),
       },
     ];

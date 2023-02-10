@@ -37,9 +37,13 @@ export class AuthController {
     @Body() data: RegisterUserDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<any> {
-    const { token } = await this.authService.register(data);
-    response.cookie('key', `Bearer ${token}`, { httpOnly: true });
-    return { token };
+    try {
+      const { token } = await this.authService.register(data);
+      response.cookie('key', `Bearer ${token}`, { httpOnly: true });
+      return { token };
+    } catch (error) {
+      ErrorHelper.BadGatewayException(error);
+    }
   }
 
   @Post('/logout')
@@ -48,11 +52,15 @@ export class AuthController {
     @Res({ passthrough: true }) response: Response,
     @Req() request: Request
   ): Promise<any> {
-    await this.authService.logout(request.cookies.key);
-    response.clearCookie('key', { httpOnly: true });
-    return {
-      message: 'success',
-    };
+    try {
+      await this.authService.logout(request.cookies.key);
+      response.clearCookie('key', { httpOnly: true });
+      return {
+        message: 'success',
+      };
+    } catch (error) {
+      ErrorHelper.BadGatewayException(error);
+    }
   }
 
   @Get('/verify-token')
@@ -97,24 +105,33 @@ export class AuthController {
   @Get('/info')
   @UseGuards(AuthGuard)
   async getInfo(@Req() request: Request) {
-    const authorization = request.cookies['key'];
+    try {
+      const authorization = request.cookies['key'];
 
-    const [bearer, token] = authorization.split(' ');
-    if (bearer == 'Bearer' && token != '') {
-      const user = await this.authService.verifyToken(token);
+      const [bearer, token] = authorization.split(' ');
+      if (bearer == 'Bearer' && token != '') {
+        const user = await this.authService.verifyToken(token);
 
-      if (!user) {
-        ErrorHelper.UnauthorizedException('Unauthorized Exception');
+        if (!user) {
+          ErrorHelper.UnauthorizedException('Unauthorized Exception');
+        }
+        return this.userService.findOneBy({ id: user.id });
+      } else {
+        ErrorHelper.UnauthorizedException('Unauthorized');
       }
-      return this.userService.findOneBy({ id: user.id });
-    } else {
-      ErrorHelper.UnauthorizedException('Unauthorized');
+    } catch (error) {
+      ErrorHelper.BadGatewayException(error);
     }
   }
 
   @Post('/verify-email')
   async create(@Body() body: VerifyEmailDto): Promise<any> {
-    const data = await this.authService.sendVerifyEmail(body);
-    return data;
+    try {
+      const data = await this.authService.sendVerifyEmail(body);
+      return data;
+    } catch (error) {
+      console.log(error);
+      ErrorHelper.BadRequestException(error);
+    }
   }
 }
