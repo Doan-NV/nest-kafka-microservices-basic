@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { createQueryBuilder, FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository } from 'typeorm';
 import { BcryptHelper } from 'src/helper/bcrypt';
 import { User } from './entity/user.entity';
-import { RegisterUserDto } from '../auth/dto/auth.dto';
+import { UserDto } from './dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,12 +36,12 @@ export class UsersService {
     }
   }
 
-  public async create(user: RegisterUserDto): Promise<any> {
+  public async create(user: UserDto): Promise<any> {
     try {
       let { password } = user;
       password = await BcryptHelper.hash(password);
       const newUser = await this.usersRepository.save({ ...user, password });
-      return newUser.id;
+      return newUser;
     } catch (error) {
       throw error;
     }

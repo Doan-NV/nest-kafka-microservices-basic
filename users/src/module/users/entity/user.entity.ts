@@ -11,7 +11,7 @@ export class User {
   @Column()
   lastName: string;
 
-  @Column({ unique: true })
+  @Column()
   username: string;
 
   @Column({ unique: true })

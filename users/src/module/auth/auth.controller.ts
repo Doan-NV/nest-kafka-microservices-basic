@@ -27,18 +27,21 @@ export class AuthController {
     @Body() data: LoginDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<any> {
-    const { token } = await this.authService.login(data);
-    response.cookie('key', `Bearer ${token}`, { httpOnly: true });
-    return { token };
+    try {
+      const { token } = await this.authService.login(data);
+      response.cookie('key', `Bearer ${token}`, { httpOnly: true });
+      return { token };
+    } catch (error) {
+      ErrorHelper.UnauthorizedException(error);
+    }
   }
-
   @Post('/register')
   async register(
     @Body() data: RegisterUserDto,
     @Res({ passthrough: true }) response: Response
   ): Promise<any> {
     try {
-      const { token } = await this.authService.register(data);
+      const token = await this.authService.register(data);
       response.cookie('key', `Bearer ${token}`, { httpOnly: true });
       return { token };
     } catch (error) {
@@ -66,17 +69,21 @@ export class AuthController {
   @Get('/verify-token')
   @UseGuards(AuthGuard)
   async user(@Req() request: Request) {
-    const authorization = request.cookies['key'];
-    const [bearer, token] = authorization.split(' ');
-    if (bearer == 'Bearer' && token != '') {
-      const user = await this.authService.verifyToken(token);
+    try {
+      const authorization = request.cookies['key'];
+      const [bearer, token] = authorization.split(' ');
+      if (bearer == 'Bearer' && token != '') {
+        const user = await this.authService.verifyToken(token);
 
-      if (!user) {
-        ErrorHelper.UnauthorizedException('Unauthorized Exception');
+        if (!user) {
+          ErrorHelper.UnauthorizedException('Unauthorized Exception');
+        }
+        return this.userService.findOneBy({ id: user.id });
+      } else {
+        ErrorHelper.UnauthorizedException('Unauthorized');
       }
-      return this.userService.findOneBy({ id: user.id });
-    } else {
-      ErrorHelper.UnauthorizedException('Unauthorized');
+    } catch (error) {
+      ErrorHelper.NotFoundException(error);
     }
   }
 
@@ -109,6 +116,8 @@ export class AuthController {
       const authorization = request.cookies['key'];
 
       const [bearer, token] = authorization.split(' ');
+      console.log('🚀 ~ file:token', token);
+
       if (bearer == 'Bearer' && token != '') {
         const user = await this.authService.verifyToken(token);
 

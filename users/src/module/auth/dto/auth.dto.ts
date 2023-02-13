@@ -24,10 +24,15 @@ export class RegisterUserDto {
 
   @MaxLength(254)
   @IsNotEmpty()
-  emailCode: number;
+  @IsString()
+  emailCode: string;
 
   @IsString()
   password: string;
+
+  @IsString()
+  @IsNotEmpty()
+  passwordConfirm: string;
 
   @IsString()
   @MaxLength(40)

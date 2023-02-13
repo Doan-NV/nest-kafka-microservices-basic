@@ -18,7 +18,7 @@ import * as bcrypt from 'bcryptjs';
       email: faker.internet.email(),
       password,
       username: faker.internet.userName(),
-      emailCode: Math.floor(Math.random() * 100),
+      emailCode: Math.floor(Math.random() * 100).toString(),
     };
 
     await userService.create(data);

@@ -4,6 +4,7 @@ import { BcryptHelper } from 'src/helper/bcrypt';
 import { ErrorHelper } from 'src/helper/error';
 import { TokenHelper } from 'src/helper/token';
 import { ConfigService } from 'src/share/config/config.service';
+import { DataSource } from 'typeorm';
 import { RedisService } from '../cache/redis.service';
 import { KafkaService } from '../kafka/kafka.service';
 import { UsersService } from '../users/users.service';
@@ -15,6 +16,7 @@ export class AuthService {
     private readonly usersService: UsersService,
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
+    private dataSource: DataSource,
     private kafkaService: KafkaService,
     @Inject('REDIS') private readonly redisService: RedisService
   ) {}
@@ -44,11 +46,9 @@ export class AuthService {
   async login(data: LoginDto): Promise<any> {
     const { email, password } = data;
     const user = await this.usersService.validateUser({ email });
+
     if (!user) {
-      throw new HttpException(
-        { message: 'username or email does not exist' },
-        HttpStatus.UNPROCESSABLE_ENTITY
-      );
+      throw 'username or email does not exist';
     }
     const passwordCompare = await BcryptHelper.compare(password, user.password);
 
@@ -81,20 +81,53 @@ export class AuthService {
   }
 
   async register(data: RegisterUserDto): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
     try {
-      const { email, emailCode } = data;
+      const {
+        email,
+        password,
+        passwordConfirm,
+        firstName,
+        lastName,
+        emailCode,
+        username,
+      } = data;
+      if (password !== passwordConfirm) {
+        throw 'password and passwordConfirm not match';
+      }
+      const user = await this.usersService.findOneBy({ email });
+      if (user) {
+        throw 'email already use!';
+      }
       const code = await this.redisService.getByKey(email);
-      if (emailCode !== parseInt(code)) {
+      console.log('🚀 code', code);
+      if (emailCode !== code) {
         throw 'Email code wrong!';
       }
-      const existUser = await this.usersService.findOneBy({ email });
-      if (existUser) {
-        throw 'username or email exist, please login or register by other email';
-      }
-      const { id } = await this.usersService.create(data);
-      const { token } = this._generateToken(id);
-      return { token };
+      const { id } = await this.usersService.create({
+        firstName,
+        lastName,
+        email,
+        password,
+        username,
+      });
+
+      const { token, expires } = this._generateToken(id);
+      const date = new Date();
+      await this.tokenService.create({
+        token,
+        userId: id,
+        createdAt: date,
+        expiredAt: new Date(date.getTime() + expires),
+      });
+      await queryRunner.commitTransaction();
+      await this.redisService.removeByKey(email);
+
+      return token;
     } catch (error) {
+      await queryRunner.rollbackTransaction();
       throw error;
     }
   }
@@ -131,7 +164,7 @@ export class AuthService {
 
       await this.kafkaService.emit([EMAIL_TOPIC], 'sendVerifyEmail', {
         ...data,
-        message: code,
+        message: codeOTP,
       });
     } catch (error) {
       throw error;
@@ -150,12 +183,10 @@ export class AuthService {
       secret,
       expiresIn
     );
-    // const refreshToken = this._generateRefreshToken(id);
 
     return {
       token,
       expires,
-      // refreshToken,
     };
   }
 }

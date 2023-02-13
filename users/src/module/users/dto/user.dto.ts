@@ -8,12 +8,11 @@ import {
 } from 'class-validator';
 
 export class UserDto {
-  id?: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  isAmbassador?: boolean;
+  username: string;
 }
 
 export class UserTokenDto {

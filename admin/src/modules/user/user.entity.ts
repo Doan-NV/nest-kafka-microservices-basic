@@ -1,11 +1,26 @@
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
+@Entity()
 export class User {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column()
   firstName: string;
+
+  @Column()
   lastName: string;
+
+  @Column()
+  username: string;
+
+  @Column({ unique: true })
   email: string;
+
+  @Exclude()
+  @Column()
   password: string;
-  isAmbassador: boolean;
-  get name() {
-    return `${this.firstName} ${this.lastName}`;
-  }
+
+  @Column({ default: true })
+  isAdmin: boolean;
 }

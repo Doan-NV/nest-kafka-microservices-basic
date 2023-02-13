@@ -12,7 +12,6 @@ export class AuthGuard implements CanActivate {
     }
     const user = await this.verifyToken(request.cookies.key);
     return user ? true : false;
-    // return validateRequest(request);
   }
 
   async verifyToken(authorization: string) {

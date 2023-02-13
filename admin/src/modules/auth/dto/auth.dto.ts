@@ -16,7 +16,6 @@ export class RegisterDto {
   email: string;
 
   @IsString()
-  // @IsMatchPattern(PASSWORD_PATTERN)
   password: string;
 
   @IsString()

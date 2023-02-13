@@ -20,7 +20,9 @@ export class TokenHelper {
     const token = jwt.sign(payload, secret, {
       expiresIn,
     });
-    const decoded = jwt.decode(token) as jwt.JwtPayload;
+
+    const decoded = jwt.verify(token, secret) as jwt.JwtPayload;
+
     return {
       token,
       expires: decoded.iat,
