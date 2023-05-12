@@ -9,6 +9,3 @@ services:
       - .env:/.env
       - ./package.json:/package.json
       - ./yarn.lock:/yarn.lock
-    # depends_on: if have database
-    #   - db
-    #   - redis_server

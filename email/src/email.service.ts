@@ -6,7 +6,6 @@ export class EmailService {
   constructor(private mailerService: MailerService) {}
 
   public async sendCompleteOrder(payload: any) {
-    console.log('🚀 ~ file: email.service.ts:9 ~ EmailService ~ sendCompleteOrder ~ payload', payload);
 
     const {email, message, } =payload;
     this.mailerService.sendMail({
