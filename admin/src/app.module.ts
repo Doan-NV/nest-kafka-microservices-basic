@@ -12,7 +12,7 @@ import { UserModule } from './modules/user/user.module';
 import { ProductModule } from './modules/product/product.module';
 import { OrderModule } from './modules/order/order.module';
 import { KafkaModule } from './modules/kafka/kafka.module';
-
+// comment cua doannv
 @Module({
   imports: [
     TypeOrmModule.forRoot({
